@@ -1,5 +1,7 @@
-import React from "react";
+/** @jsxRuntime classic */
+/** @jsx jsx  */
+import { jsx } from "theme-ui";
 
-const List = () => <h1>List</h1>;
+const List = ({ toggleTheme }) => <h1 sx={{ variant: "containers.page" }} onClick={toggleTheme}>List</h1>;
 
 export default List;
