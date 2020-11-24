@@ -7,8 +7,6 @@ const Article = (props) => {
     query: { id },
   } = useRouter();
 
-  console.log(id);
-
   return (
     <div>
       <h1>Article №{id}</h1>
