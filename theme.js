@@ -2,7 +2,7 @@ import { roboto } from "@theme-ui/presets";
 
 const LIGHT_THEME = {
   ...roboto,
-  name: 'light',
+  name: "light",
   containers: {
     card: {
       boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
@@ -25,11 +25,16 @@ const LIGHT_THEME = {
 
 const DARK_THEME = {
   ...LIGHT_THEME,
-  name: 'dark',
+  name: "dark",
   containers: {
     page: {
       ...LIGHT_THEME.containers.page,
-      background: "black",
+      background: "#000",
+      color: "#fff",
+    },
+    card: {
+      ...LIGHT_THEME.containers.card,
+      background: "#000",
       color: "#fff",
     },
   },
