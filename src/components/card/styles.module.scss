@@ -1,0 +1,16 @@
+.bookmark {
+  position: absolute;
+  right: -4px;
+  top: 0;
+  cursor: pointer;
+  transition: 0.3s all;
+
+  &:hover {
+    opacity: 0.8;
+    transition: 0.3s all;
+  }
+}
+
+.card {
+  position: relative;
+}
