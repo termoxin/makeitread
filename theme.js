@@ -1,15 +1,18 @@
-import { roboto } from "@theme-ui/presets";
+import { swiss } from "@theme-ui/presets";
 
 const LIGHT_THEME = {
-  ...roboto,
+  ...swiss,
   name: "light",
+  colors: {
+    ...swiss.colors,
+    text: "#000",
+    muted: "#828282",
+    link: "#1EABF9",
+  },
   containers: {
     card: {
       boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-      border: "1px solid",
-      borderColor: "muted",
-      borderRadius: "4px",
-      p: 2,
+      maxWidth: "300px",
     },
     page: {
       width: "100%",
@@ -19,13 +22,21 @@ const LIGHT_THEME = {
     },
   },
   styles: {
-    ...roboto.styles,
+    ...swiss.styles,
+    a: { color: "link" },
+    p: { ...swiss.styles.p, marginTop: 15 },
+    h2: { ...swiss.styles.h2, marginTop: 45 },
   },
 };
 
 const DARK_THEME = {
   ...LIGHT_THEME,
   name: "dark",
+  colors: {
+    ...LIGHT_THEME.colors,
+    background: "#211f1f",
+    text: "#fff",
+  },
   containers: {
     page: {
       ...LIGHT_THEME.containers.page,
@@ -34,10 +45,12 @@ const DARK_THEME = {
     },
     card: {
       ...LIGHT_THEME.containers.card,
-      background: "#000",
+      background: "#24292e",
       color: "#fff",
     },
   },
 };
+
+console.log(LIGHT_THEME);
 
 export default { LIGHT_THEME, DARK_THEME };
