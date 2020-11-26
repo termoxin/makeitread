@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Box, ThemeProvider } from "theme-ui";
+import { Box, Theme, ThemeProvider } from "theme-ui";
+import type { AppProps /*, AppContext */ } from "next/app";
+
 import { Navigation } from "../src/components/nav/Nav";
 
 import "../styles/styles.css";
 import theme from "../theme";
 
-export default function App({ Component, pageProps }) {
+const App = ({ Component, pageProps }: AppProps) => {
   const [currentTheme, setCurrentTheme] = useState(theme.LIGHT_THEME);
 
   const toggleTheme = () => {
@@ -21,9 +23,11 @@ export default function App({ Component, pageProps }) {
       <Box mt={2} onClick={toggleTheme}>
         <Navigation />
       </Box>
-      <ThemeProvider theme={currentTheme}>
+      <ThemeProvider theme={currentTheme as Theme}>
         <Component {...pageProps} toggleTheme={toggleTheme} />
       </ThemeProvider>
     </Box>
   );
-}
+};
+
+export default App;

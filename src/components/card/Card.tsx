@@ -44,6 +44,6 @@ export const Card: FC<CardProps> = ({
         <Text sx={{ fontSize: 14 }}>{description}</Text>
       </Box>
     </Box>
-    {marked && <Bookmark className={styles.bookmark} />}
+    {marked && <Bookmark />}
   </CardContainer>
 );

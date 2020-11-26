@@ -51,6 +51,4 @@ const DARK_THEME = {
   },
 };
 
-console.log(LIGHT_THEME);
-
 export default { LIGHT_THEME, DARK_THEME };
