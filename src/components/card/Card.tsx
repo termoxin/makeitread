@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { FC } from "react";
 import { Box, Card as CardContainer, Heading, Image, Text } from "theme-ui";
 
@@ -12,6 +13,7 @@ interface CardProps {
   description: string;
   cover: string;
   marked?: boolean;
+  slug: string;
 }
 
 export const Card: FC<CardProps> = ({
@@ -21,14 +23,19 @@ export const Card: FC<CardProps> = ({
   description,
   cover,
   marked,
+  slug,
 }) => (
   <CardContainer sx={{ variant: "containers.card" }} className={styles.card}>
     <Image src={cover} />
     <Box p={3}>
       <Box>
-        <Heading sx={{ variant: "styles.h4", fontWeight: "body" }}>
-          {title}
-        </Heading>
+        <Link href="/readlist/[id]" as={`/readlist/${slug}`}>
+          <Heading
+            sx={{ variant: "styles.h4", fontWeight: "body", cursor: "pointer" }}
+          >
+            {title}
+          </Heading>
+        </Link>
         <Text sx={{ variant: "styles.p", color: "muted" }}>
           {source} • {ttr} min
         </Text>
