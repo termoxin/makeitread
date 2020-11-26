@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ThemeProvider } from "theme-ui";
+import { Box, ThemeProvider } from "theme-ui";
+import { Navigation } from "../src/components/nav/Nav";
 
 import "../styles/styles.css";
 import theme from "../theme";
@@ -16,8 +17,13 @@ export default function App({ Component, pageProps }) {
   };
 
   return (
-    <ThemeProvider theme={currentTheme}>
-      <Component {...pageProps} toggleTheme={toggleTheme} />
-    </ThemeProvider>
+    <Box pl={5} pr={5} pt={10} pb={5}>
+      <Box mt={2} onClick={toggleTheme}>
+        <Navigation />
+      </Box>
+      <ThemeProvider theme={currentTheme}>
+        <Component {...pageProps} toggleTheme={toggleTheme} />
+      </ThemeProvider>
+    </Box>
   );
 }
