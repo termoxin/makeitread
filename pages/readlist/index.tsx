@@ -1,29 +1,76 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { Card, Text, Image, jsx } from "theme-ui";
+import { Box, Grid, Heading, jsx } from "theme-ui";
 
-const nycImage =
-  "https://assets.simpleviewinc.com/simpleview/image/upload/c_fill,h_720,q_75,w_1400/v1/clients/newyorkcity/Coronavirus_Info_midtown_manhattan_skyline_nyc_3000x2000_364fa9b8-86ce-4f95-907a-4bd8ea32f232.jpg";
+import { Card } from "../../src/components/card/Card";
 
-const List = ({ toggleTheme }) => (
-  <div>
-    <h1 sx={{ variant: "containers.page" }} onClick={toggleTheme}>
-      List
-    </h1>
-    <p>
-      <b>HERE'S THE SECRET KEY: </b>
-      {process.env.NEXT_PUBLIC_SECRET}
-    </p>
-    <Card
+const List = () => (
+  <Box>
+    <Heading mt={80} sx={{ variant: "styles.h1" }}>
+      My List
+    </Heading>
+    <Box
       sx={{
-        variant: "containers.card",
-        maxWidth: 256,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
-      <Image src={nycImage} />
-      <Text>Card</Text>
-    </Card>
-  </div>
+      <Grid columns={[1, 2, 3, 4]} gap={4} mt={20}>
+        <Card
+          title="Nature"
+          source="medium.com"
+          ttr={4}
+          description={`There are tech skills and there are soft skills. Every programmer knows that. Tech skills are`}
+          cover="https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg"
+          marked
+          slug="get-started"
+        />
+        <Card
+          title="Nature"
+          source="medium.com"
+          ttr={4}
+          description={`There are tech skills and there are soft skills. Every programmer knows that. Tech skills are`}
+          cover="https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg"
+          slug="introduction"
+        />
+        <Card
+          title="Nature"
+          source="medium.com"
+          ttr={4}
+          description={`There are tech skills and there are soft skills. Every programmer knows that. Tech skills are`}
+          cover="https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg"
+          slug="motivation"
+        />
+        <Card
+          title="Nature"
+          source="medium.com"
+          ttr={4}
+          description={`There are tech skills and there are soft skills. Every programmer knows that. Tech skills are`}
+          cover="https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg"
+          slug="api"
+          marked
+        />
+        <Card
+          title="Nature"
+          source="medium.com"
+          ttr={4}
+          description={`There are tech skills and there are soft skills. Every programmer knows that. Tech skills are`}
+          cover="https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg"
+          slug="get-pieces-together"
+        />
+        <Card
+          title="Nature"
+          source="medium.com"
+          ttr={4}
+          description={`There are tech skills and there are soft skills. Every programmer knows that. Tech skills are`}
+          cover="https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg"
+          slug="summary"
+          marked
+        />
+      </Grid>
+    </Box>
+  </Box>
 );
 
 export default List;
