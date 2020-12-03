@@ -51,7 +51,7 @@ const extractPageMetadata = (html: string, document: Document) => {
 
   return {
     cover,
-    title: title || document.title,
+    title,
     description,
     slug: toSlug(title),
   };
