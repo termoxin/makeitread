@@ -9,7 +9,7 @@ import FileSync from "lowdb/adapters/FileSync";
 import { CardProps } from "./../../../src/components/card/Card";
 import { getPageMetadata } from "./../../../src/helpers/cheerio";
 
-const adapter = new FileSync("db.json");
+const adapter = new FileSync<{ articles: CardProps[] }>("db.json");
 const db = low(adapter);
 
 db.defaults({

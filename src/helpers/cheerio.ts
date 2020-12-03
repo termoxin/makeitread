@@ -16,7 +16,7 @@ const toSlug = (str: string) =>
 
 const parseArticle = (url: string): Promise<ParsedArticle> =>
   new Promise((resolve, reject) => {
-    read(url, (err, article) => {
+    read(url, (err: Error, article: ParsedArticle) => {
       if (!err) {
         resolve(article);
       }
