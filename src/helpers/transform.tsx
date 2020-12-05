@@ -43,7 +43,7 @@ export const transform: Transform = (node, index) =>
       const { href } = node.attribs;
 
       return (
-        <NavLink variant="styles.a" href={href} target="__blank">
+        <NavLink variant="styles.a" href={href} target="__blank" key={index}>
           {text}
         </NavLink>
       );
