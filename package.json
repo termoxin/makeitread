@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "postbuild": "next-on-netlify"
+    "start": "next start"
   },
   "dependencies": {
     "@theme-ui/presets": "^0.3.4",
@@ -16,7 +15,6 @@
     "next": "10.0.2",
     "next-connect": "^0.9.1",
     "next-images": "^1.6.2",
-    "next-on-netlify": "^2.6.3",
     "node-readability": "^3.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
