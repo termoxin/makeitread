@@ -4,6 +4,7 @@ import { FC } from "react";
 import { Box, Grid, Heading, jsx } from "theme-ui";
 
 import { Card, CardProps } from "@components/card/Card";
+import { fetchReadList } from "src/api/readlist";
 
 interface ListProps {
   list: CardProps[];
@@ -31,8 +32,7 @@ const List: FC<ListProps> = ({ list }) => (
 );
 
 export const getServerSideProps = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/readlist`);
-  const list = await response.json();
+  const list = await fetchReadList();
 
   return { props: { list } };
 };

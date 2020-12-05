@@ -9,11 +9,9 @@ import { Box, Heading, Text, Link, jsx, Button } from "theme-ui";
 
 import { CardProps } from "@components/card/Card";
 import { transform } from "../../src/helpers/transform";
+import { getArticle, setMarkAsRead } from "src/api/article";
 
 interface ArticleProps extends CardProps {
-  _id: string;
-  text: string;
-  original: string;
   error?: boolean;
 }
 
@@ -34,23 +32,9 @@ const Article: FC<ArticleProps> = ({
   }
 
   const toggleMarkAsRead = async () => {
-    const config = {
-      body: JSON.stringify({ id: _id }),
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
+    const response = await setMarkAsRead(_id, !isMarkedAsRead);
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API}/api/readlist`,
-      config
-    );
-
-    const data = await response.json();
-
-    setMarkedAsRead(data.marked);
+    setMarkedAsRead(!response.marked);
   };
 
   return (
@@ -92,14 +76,10 @@ const Article: FC<ArticleProps> = ({
 
 export const getServerSideProps = async ({
   params,
-}: GetServerSidePropsContext) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API}/api/readlist/${params?.slug}`
-  );
+}: GetServerSidePropsContext<{ slug: string }>) => {
+  const article = await getArticle(params?.slug as string);
 
-  const { data } = await response.json();
-
-  return { props: data };
+  return { props: article };
 };
 
 export default Article;
