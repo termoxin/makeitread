@@ -3,14 +3,15 @@
 
 import { GetServerSidePropsContext } from "next";
 import DefaultErrorPage from "next/error";
-import { FC } from "react";
+import { FC, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { Box, Heading, Text, Link, jsx } from "theme-ui";
+import { Box, Heading, Text, Link, jsx, Button } from "theme-ui";
 
 import { CardProps } from "../../src/components/card/Card";
 import { transform } from "../../src/helpers/transform";
 
 interface ArticleProps extends CardProps {
+  _id: string;
   text: string;
   original: string;
   error?: boolean;
@@ -23,10 +24,34 @@ const Article: FC<ArticleProps> = ({
   original,
   text,
   error,
+  marked,
+  _id,
 }) => {
+  const [isMarkedAsRead, setMarkedAsRead] = useState(marked);
+
   if (error) {
     return <DefaultErrorPage statusCode={404} />;
   }
+
+  const toggleMarkAsRead = async () => {
+    const config = {
+      body: JSON.stringify({ id: _id }),
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/api/readlist`,
+      config
+    );
+
+    const data = await response.json();
+
+    setMarkedAsRead(data.marked);
+  };
 
   return (
     <Box
@@ -41,6 +66,7 @@ const Article: FC<ArticleProps> = ({
       }}
     >
       <Heading sx={{ variant: "styles.h1" }}>{title}</Heading>
+
       <Box mt={10} mb={10}>
         <Text sx={{ variant: "styles.p", color: "muted" }}>
           {source} • {ttr} min
@@ -54,6 +80,12 @@ const Article: FC<ArticleProps> = ({
         </Link>
         <div>{ReactHtmlParser(text, { transform })}</div>
       </Box>
+      <Button
+        onClick={toggleMarkAsRead}
+        variant={isMarkedAsRead ? "primary" : "secondary"}
+      >
+        {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
+      </Button>
     </Box>
   );
 };
