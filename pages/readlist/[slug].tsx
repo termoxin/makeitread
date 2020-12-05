@@ -1,9 +1,42 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
 
-import { Box, Heading, Text, Link, jsx } from "theme-ui";
+import { GetServerSidePropsContext } from "next";
+import DefaultErrorPage from "next/error";
+import { FC, useState } from "react";
+import ReactHtmlParser from "react-html-parser";
+import { Box, Heading, Text, Link, jsx, Button } from "theme-ui";
 
-const Article = () => {
+import { CardProps } from "@components/card/Card";
+import { transform } from "../../src/helpers/transform";
+import { getArticle, setMarkAsRead } from "src/api/article";
+
+interface ArticleProps extends CardProps {
+  error?: boolean;
+}
+
+const Article: FC<ArticleProps> = ({
+  title,
+  source,
+  ttr,
+  original,
+  text,
+  error,
+  marked,
+  _id,
+}) => {
+  const [isMarkedAsRead, setMarkedAsRead] = useState(marked);
+
+  if (error) {
+    return <DefaultErrorPage statusCode={404} />;
+  }
+
+  const toggleMarkAsRead = async () => {
+    const response = await setMarkAsRead(_id, !isMarkedAsRead);
+
+    setMarkedAsRead(!response.marked);
+  };
+
   return (
     <Box
       sx={{
@@ -16,73 +49,37 @@ const Article = () => {
         pb: 50,
       }}
     >
-      <Heading sx={{ variant: "styles.h1" }}>
-        Расшифровки аббревиатур (IMHO, AFAIK, LOL и т.п.)
-      </Heading>
+      <Heading sx={{ variant: "styles.h1" }}>{title}</Heading>
+
       <Box mt={10} mb={10}>
         <Text sx={{ variant: "styles.p", color: "muted" }}>
-          medium.com • 4 min
+          {source} • {ttr} min
         </Text>
         <Link
-          href="http://medium.com"
+          href={original}
           target="__blank"
           sx={{ variant: "styles.a", textDecoration: "none" }}
         >
           View original
         </Link>
+        <div>{ReactHtmlParser(text, { transform })}</div>
       </Box>
-      <Text variant="styles.p">
-        After publishing my previous article tracking React Libraries worth
-        talking about, a few people asked me how I decide which library to use
-        in my own projects.
-      </Text>
-      <Text variant="styles.p">
-        Truth is, I don’t have a single hard and fast rule, but rather a feeling
-        that comes from looking at {""}
-        <span sx={{ variant: "styles.p", fontWeight: "bold" }}>
-          how a library stacks up against a set of quick checks that. {""}
-        </span>
-        I’ve developed over the years of being burned by dodgy libraries.
-      </Text>
-      <Heading variant="styles.h2">Docs</Heading>
-      <Text variant="styles.p">
-        One of the first things I check before installing a library is the
-        documentation
-      </Text>
-      <Text variant="styles.p">
-        I’ve also been asked this several times over the years as an interview
-        question for frontend developer roles. I’ve heard different answers
-        every time I asked the question back to the interviewer - keep in mind
-        that some teams care about different things, and you might have to
-        decide for yourself.
-      </Text>
-      <Heading variant="styles.h2">Issues</Heading>
-      <Text variant="styles.p">
-        After publishing my previous article tracking React Libraries worth
-        talking about, a few people asked me how I decide which library to use
-        in my own projects.
-      </Text>
-      <Text variant="styles.p">
-        Truth is, I don’t have a single hard and fast rule, but rather a feeling
-        that comes from looking at how a library stacks up against a set of
-        quick checks that I’ve developed over the years of being burned by dodgy
-        libraries.
-      </Text>
-      <Text variant="styles.p">
-        I’ve also been asked this several times over the years as an interview
-        question for frontend developer roles. I’ve heard different answers
-        every time I asked the question back to the interviewer - keep in mind
-        that some teams care about different things, and you might have to
-        decide for yourself.
-      </Text>
-      <Heading variant="styles.h2">Conclusion</Heading>
-      <Text variant="styles.p">
-        After publishing my previous article tracking React Libraries worth
-        talking about, a few people asked me how I decide which library to use
-        in my own projects.
-      </Text>
+      <Button
+        onClick={toggleMarkAsRead}
+        variant={isMarkedAsRead ? "primary" : "secondary"}
+      >
+        {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
+      </Button>
     </Box>
   );
+};
+
+export const getServerSideProps = async ({
+  params,
+}: GetServerSidePropsContext<{ slug: string }>) => {
+  const article = await getArticle(params?.slug as string);
+
+  return { props: article };
 };
 
 export default Article;

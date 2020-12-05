@@ -1,12 +1,20 @@
 import Link from "next/link";
 import React, { FC } from "react";
-import { Box, Card as CardContainer, Heading, Image, Text } from "theme-ui";
+import {
+  AspectImage,
+  Box,
+  Card as CardContainer,
+  Heading,
+  Text,
+} from "theme-ui";
+import imageNotFound from "./imageNotFound.png";
 
 import { Bookmark } from "./Bookmark";
 
 import styles from "./styles.module.scss";
 
-interface CardProps {
+export interface CardProps {
+  _id: string;
   title: string;
   source: string;
   ttr: number;
@@ -14,6 +22,8 @@ interface CardProps {
   cover: string;
   marked?: boolean;
   slug: string;
+  text: string;
+  original: string;
 }
 
 export const Card: FC<CardProps> = ({
@@ -25,8 +35,15 @@ export const Card: FC<CardProps> = ({
   marked,
   slug,
 }) => (
-  <CardContainer sx={{ variant: "containers.card" }} className={styles.card}>
-    <Image src={cover} />
+  <CardContainer
+    sx={{ variant: "containers.card", opacity: marked ? 0.4 : 1 }}
+    className={styles.card}
+  >
+    <AspectImage
+      src={cover || imageNotFound}
+      ratio={4 / 3}
+      sx={{ width: 300, height: 200 }}
+    />
     <Box p={3}>
       <Box>
         <Link href="/readlist/[id]" as={`/readlist/${slug}`}>

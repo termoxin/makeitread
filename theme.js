@@ -8,6 +8,7 @@ const LIGHT_THEME = {
     text: "#000",
     muted: "#828282",
     link: "#1EABF9",
+    redish: "#FD547A",
   },
   containers: {
     card: {
@@ -19,6 +20,22 @@ const LIGHT_THEME = {
       maxWidth: "960px",
       m: 0,
       mx: "auto",
+    },
+  },
+  badges: {
+    primary: {
+      bg: "#FD547A",
+      color: "#fff",
+    },
+  },
+  buttons: {
+    primary: {
+      color: "#fff",
+      bg: "redish",
+    },
+    secondary: {
+      color: "#fff",
+      bg: "#7ed063",
     },
   },
   styles: {
@@ -34,8 +51,8 @@ const DARK_THEME = {
   name: "dark",
   colors: {
     ...LIGHT_THEME.colors,
-    background: "#211f1f",
-    text: "#fff",
+    background: "#1A1A1A",
+    text: "rgb(224, 224, 224)",
   },
   containers: {
     page: {
