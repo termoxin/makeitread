@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Box, Theme, ThemeProvider } from "theme-ui";
-import type { AppProps /*, AppContext */ } from "next/app";
+import type { AppProps } from "next/app";
 
-import { Navigation } from "../src/components/nav/Nav";
+import { Navigation } from "@components/nav/Nav";
 
-import "../styles/styles.css";
 import theme from "../theme";
+import "../styles/styles.css";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [currentTheme, setCurrentTheme] = useState(theme.LIGHT_THEME);

@@ -7,7 +7,7 @@ import { FC, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
 import { Box, Heading, Text, Link, jsx, Button } from "theme-ui";
 
-import { CardProps } from "../../src/components/card/Card";
+import { CardProps } from "@components/card/Card";
 import { transform } from "../../src/helpers/transform";
 
 interface ArticleProps extends CardProps {

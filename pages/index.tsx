@@ -4,7 +4,8 @@
 import Link from "next/link";
 import { Badge, Heading, jsx } from "theme-ui";
 import { GetServerSidePropsContext } from "next";
-import { CardProps } from "../src/components/card/Card";
+
+import { CardProps } from "@components/card/Card";
 
 interface HomeProps {
   list: CardProps[];

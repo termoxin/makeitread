@@ -3,7 +3,7 @@
 import { FC } from "react";
 import { Box, Grid, Heading, jsx } from "theme-ui";
 
-import { Card, CardProps } from "../../src/components/card/Card";
+import { Card, CardProps } from "@components/card/Card";
 
 interface ListProps {
   list: CardProps[];
