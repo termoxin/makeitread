@@ -2,53 +2,37 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import nc from "next-connect";
 
-import low from "lowdb";
-
-import FileSync from "lowdb/adapters/FileSync";
-
-import { CardProps } from "./../../../src/components/card/Card";
+import Article from "./../../../src/db/schemas";
 import { getPageMetadata } from "./../../../src/helpers/cheerio";
+import { initDb } from "../../../src/db";
 
-const adapter = new FileSync<{ articles: CardProps[] }>("db.json");
-const db = low(adapter);
-
-db.defaults({
-  articles: [
-    {
-      cover:
-        "https://media.nature.com/lw800/magazine-assets/d41586-020-01390-w/d41586-020-01390-w_17974388.jpg",
-      description: "React-html-parser",
-      marked: false,
-      slug: "get-pieces-together",
-      source: "medium.to",
-      title: "React-html-parser",
-      ttr: 5,
-      original:
-        "https://medium.com/better-programming/object-oriented-programming-the-trillion-dollar-disaster-92a4b666c7c7",
-      text: "1",
-    },
-  ],
-}).write();
-
-export const getArticles = (): CardProps[] => db.get("articles").value();
+initDb();
 
 const handler = nc()
-  .get((_req: NextApiRequest, res: NextApiResponse) => {
-    return res.send(getArticles());
+  .get(async (_req: NextApiRequest, res: NextApiResponse) => {
+    return res.send(await Article.find());
   })
   .post(async (req: NextApiRequest, res: NextApiResponse) => {
     const { url } = req.body;
 
     const metaData = await getPageMetadata(url);
 
-    db.get("articles").push(metaData).write();
+    const article = new Article(metaData);
 
-    return res.send(metaData);
+    await article.save();
+
+    return res.send(article);
   })
-  .delete(async (_req: NextApiRequest, res: NextApiResponse) => {
-    db.set("articles", []).write();
+  .put(async ({ body }: NextApiRequest, res: NextApiResponse) => {
+    const { id } = body;
 
-    return res.send({ success: true });
+    const article = await Article.findById(id);
+
+    article.marked = !article.marked;
+
+    await article.save();
+
+    res.send(article);
   });
 
 export default handler;
