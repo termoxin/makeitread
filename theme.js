@@ -8,7 +8,7 @@ const LIGHT_THEME = {
     text: "#000",
     muted: "#828282",
     link: "#1EABF9",
-    red: "#FD547A",
+    redish: "#FD547A",
   },
   containers: {
     card: {
@@ -26,6 +26,16 @@ const LIGHT_THEME = {
     primary: {
       bg: "#FD547A",
       color: "#fff",
+    },
+  },
+  buttons: {
+    primary: {
+      color: "#fff",
+      bg: "redish",
+    },
+    secondary: {
+      color: "#fff",
+      bg: "#7ed063",
     },
   },
   styles: {
