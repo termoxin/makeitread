@@ -14,6 +14,7 @@ import { Bookmark } from "./Bookmark";
 import styles from "./styles.module.scss";
 
 export interface CardProps {
+  _id: string;
   title: string;
   source: string;
   ttr: number;
@@ -21,6 +22,8 @@ export interface CardProps {
   cover: string;
   marked?: boolean;
   slug: string;
+  text: string;
+  original: string;
 }
 
 export const Card: FC<CardProps> = ({
