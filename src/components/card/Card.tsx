@@ -32,7 +32,10 @@ export const Card: FC<CardProps> = ({
   marked,
   slug,
 }) => (
-  <CardContainer sx={{ variant: "containers.card" }} className={styles.card}>
+  <CardContainer
+    sx={{ variant: "containers.card", opacity: marked ? 0.4 : 1 }}
+    className={styles.card}
+  >
     <AspectImage
       src={cover || imageNotFound}
       ratio={4 / 3}
