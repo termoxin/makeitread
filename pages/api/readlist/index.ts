@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
 import nc from "next-connect";
 
 import Article from "./../../../src/db/schemas";
@@ -8,31 +7,32 @@ import { initDb } from "../../../src/db";
 
 initDb();
 
-const handler = nc()
-  .get(async (_req: NextApiRequest, res: NextApiResponse) => {
-    return res.send(await Article.find());
-  })
-  .post(async (req: NextApiRequest, res: NextApiResponse) => {
-    const { url } = req.body;
+const getHandler = async (_req: NextApiRequest, res: NextApiResponse) => {
+  return res.send(await Article.find());
+};
 
-    const metaData = await getPageMetadata(url);
+const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { url } = req.body;
 
-    const article = new Article(metaData);
+  const metaData = await getPageMetadata(url);
 
-    await article.save();
+  const article = new Article(metaData);
 
-    return res.send(article);
-  })
-  .put(async ({ body }: NextApiRequest, res: NextApiResponse) => {
-    const { id } = body;
+  await article.save();
 
-    const article = await Article.findById(id);
+  return res.send(article);
+};
 
-    article.marked = !article.marked;
+const putHandler = async ({ body }: NextApiRequest, res: NextApiResponse) => {
+  const { id, ...updates } = body;
 
-    await article.save();
-
-    res.send(article);
+  const article = await Article.findByIdAndUpdate(id, updates, {
+    returnOriginal: false,
   });
+
+  res.send(article);
+};
+
+const handler = nc().get(getHandler).post(postHandler).put(putHandler);
 
 export default handler;
