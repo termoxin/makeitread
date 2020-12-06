@@ -32,3 +32,14 @@ export const getArticle = async (slug: string | string[]) => {
 
   return data;
 };
+
+export const removeArticlFromList = async (slug: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API}/api/readlist/${slug}`,
+    { method: "DELETE" }
+  );
+
+  const { data } = await response.json();
+
+  return data;
+};
