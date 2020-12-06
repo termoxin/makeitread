@@ -21,6 +21,17 @@ const getHandler = async ({ query }: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-const handler = nc().get(getHandler);
+const deleteHandler = async (
+  { query: { slug } }: NextApiRequest,
+  res: NextApiResponse
+) => {
+  const article = await Article.findOne({ slug });
+
+  await article.delete();
+
+  return res.send({ success: true });
+};
+
+const handler = nc().get(getHandler).delete(deleteHandler);
 
 export default handler;
