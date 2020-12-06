@@ -74,7 +74,6 @@ const List: FC<ListProps> = ({ list }) => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
         }}
       >
         <Grid columns={[1, 2, 3, 4]} gap={4} mt={20}>
