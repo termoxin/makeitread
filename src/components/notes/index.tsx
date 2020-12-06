@@ -3,6 +3,7 @@
 
 import { FC } from "react";
 import { Box, Heading, Message } from "theme-ui";
+import { jsx } from "theme-ui";
 
 import { NoteProps } from "pages/readlist/[slug]";
 
