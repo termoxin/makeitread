@@ -70,6 +70,12 @@ const DARK_THEME = {
       color: "#fff",
     },
   },
+  messages: {
+    primary: {
+      color: "#2d2d2d",
+      borderLeftColor: "redish",
+    },
+  },
 };
 
 export default { LIGHT_THEME, DARK_THEME };
