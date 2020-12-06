@@ -5,19 +5,28 @@ import { GetServerSidePropsContext } from "next";
 import DefaultErrorPage from "next/error";
 import { FC, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { Box, Heading, Text, Link, jsx, Button } from "theme-ui";
+import { Box, Heading, Text, Link, jsx, Button, Message } from "theme-ui";
+import { useRouter } from "next/router";
 
 import { CardProps } from "@components/card/Card";
-import { transform } from "../../src/helpers/transform";
+import { transform } from "src/helpers/transform";
 import {
   getArticle,
   removeArticlFromList,
   setMarkAsRead,
 } from "src/api/article";
-import { useRouter } from "next/dist/client/router";
+import { getArticleNotes } from "src/api/note";
+import { Notes } from "@components/notes";
+
+export interface NoteProps {
+  _id: string;
+  text: string;
+  url: string;
+}
 
 interface ArticleProps extends CardProps {
   error?: boolean;
+  notes: NoteProps[];
 }
 
 const Article: FC<ArticleProps> = ({
@@ -30,6 +39,7 @@ const Article: FC<ArticleProps> = ({
   marked,
   slug,
   _id,
+  notes,
 }) => {
   const { push } = useRouter();
   const [isMarkedAsRead, setMarkedAsRead] = useState(marked);
@@ -68,7 +78,6 @@ const Article: FC<ArticleProps> = ({
       }}
     >
       <Heading sx={{ variant: "styles.h1" }}>{title}</Heading>
-
       <Box mt={10} mb={10}>
         <Text sx={{ variant: "styles.p", color: "muted" }}>
           {source} • {ttr} min
@@ -82,6 +91,7 @@ const Article: FC<ArticleProps> = ({
         </Link>
         <div>{ReactHtmlParser(text, { transform })}</div>
       </Box>
+      <Notes notes={notes} />
       <Button
         onClick={toggleMarkAsRead}
         variant={isMarkedAsRead ? "primary" : "secondary"}
@@ -99,8 +109,9 @@ export const getServerSideProps = async ({
   params,
 }: GetServerSidePropsContext<{ slug: string }>) => {
   const article = await getArticle(params?.slug as string);
+  const notes = await getArticleNotes(article.original);
 
-  return { props: article };
+  return { props: { ...article, notes } };
 };
 
 export default Article;
