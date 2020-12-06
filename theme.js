@@ -37,6 +37,10 @@ const LIGHT_THEME = {
       color: "#fff",
       bg: "#7ed063",
     },
+    alternative: {
+      color: "#fff",
+      bg: "link",
+    },
   },
   styles: {
     ...swiss.styles,
