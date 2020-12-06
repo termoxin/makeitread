@@ -9,7 +9,12 @@ import { Box, Heading, Text, Link, jsx, Button } from "theme-ui";
 
 import { CardProps } from "@components/card/Card";
 import { transform } from "../../src/helpers/transform";
-import { getArticle, setMarkAsRead } from "src/api/article";
+import {
+  getArticle,
+  removeArticlFromList,
+  setMarkAsRead,
+} from "src/api/article";
+import { useRouter } from "next/dist/client/router";
 
 interface ArticleProps extends CardProps {
   error?: boolean;
@@ -23,8 +28,10 @@ const Article: FC<ArticleProps> = ({
   text,
   error,
   marked,
+  slug,
   _id,
 }) => {
+  const { push } = useRouter();
   const [isMarkedAsRead, setMarkedAsRead] = useState(marked);
 
   if (error) {
@@ -35,6 +42,17 @@ const Article: FC<ArticleProps> = ({
     const response = await setMarkAsRead(_id, !isMarkedAsRead);
 
     setMarkedAsRead(!response.marked);
+  };
+
+  const deleteArticle = async () => {
+    const shouldDelete = confirm(
+      "Are you sure you want to delete the article?"
+    );
+
+    if (shouldDelete) {
+      await removeArticlFromList(slug);
+      push("/readlist");
+    }
   };
 
   return (
@@ -69,6 +87,9 @@ const Article: FC<ArticleProps> = ({
         variant={isMarkedAsRead ? "primary" : "secondary"}
       >
         {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
+      </Button>
+      <Button mt={10} onClick={deleteArticle}>
+        Delete
       </Button>
     </Box>
   );
