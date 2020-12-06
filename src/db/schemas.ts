@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
-type modelNames = "Article";
+type modelNames = "Article" | "Note";
+
+const initializeModel = (modelName: modelNames, schema: Schema) =>
+  mongoose.connection.models[modelName]
+    ? mongoose.connection.models[modelName]
+    : mongoose.model(modelName, schema);
 
 const articleSchema = new mongoose.Schema({
   cover: String,
@@ -14,11 +19,10 @@ const articleSchema = new mongoose.Schema({
   marked: Boolean,
 });
 
-const initializeModel = (modelName: modelNames, schema: Schema) =>
-  mongoose.connection.models[modelName]
-    ? mongoose.connection.models[modelName]
-    : mongoose.model(modelName, schema);
+const noteSchema = new mongoose.Schema({
+  text: String,
+  url: String,
+});
 
-const Article = initializeModel("Article", articleSchema);
-
-export default Article;
+export const Article = initializeModel("Article", articleSchema);
+export const Note = initializeModel("Note", noteSchema);
