@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 
-import Article from "./../../../src/db/schemas";
-import { getPageMetadata } from "./../../../src/helpers/cheerio";
-import { initDb } from "../../../src/db";
+import { Article } from "src/db/schemas";
+import { getPageMetadata } from "src/helpers/cheerio";
+import { initDb } from "src/db";
 
 initDb();
 

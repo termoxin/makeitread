@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 
-import Article from "./../../../src/db/schemas";
+import { Article } from "src/db/schemas";
 
 const getHandler = async ({ query }: NextApiRequest, res: NextApiResponse) => {
   const slug = query.slug;
