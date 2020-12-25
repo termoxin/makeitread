@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
-
 import { GetServerSidePropsContext } from "next";
 import DefaultErrorPage from "next/error";
 import { FC, useState } from "react";
@@ -17,6 +14,7 @@ import {
 } from "src/api/article";
 import { getArticleNotes } from "src/api/note";
 import { Notes } from "@components/notes";
+import { PageProps } from "pages/_app";
 
 export interface NoteProps {
   _id: string;
@@ -24,9 +22,10 @@ export interface NoteProps {
   url: string;
 }
 
-interface ArticleProps extends CardProps {
+interface ArticleProps extends CardProps, PageProps {
   error?: boolean;
   notes: NoteProps[];
+  email: string;
 }
 
 const Article: FC<ArticleProps> = ({
@@ -40,6 +39,8 @@ const Article: FC<ArticleProps> = ({
   slug,
   _id,
   notes,
+  email,
+  session,
 }) => {
   const { push } = useRouter();
   const [isMarkedAsRead, setMarkedAsRead] = useState(marked);
@@ -91,16 +92,20 @@ const Article: FC<ArticleProps> = ({
         </Link>
         <div>{ReactHtmlParser(text, { transform })}</div>
       </Box>
-      <Notes notes={notes} />
-      <Button
-        onClick={toggleMarkAsRead}
-        variant={isMarkedAsRead ? "primary" : "secondary"}
-      >
-        {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
-      </Button>
-      <Button mt={10} onClick={deleteArticle}>
-        Delete
-      </Button>
+      {session?.user.email === email && (
+        <>
+          <Notes notes={notes} />
+          <Button
+            onClick={toggleMarkAsRead}
+            variant={isMarkedAsRead ? "primary" : "secondary"}
+          >
+            {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
+          </Button>
+          <Button mt={10} onClick={deleteArticle}>
+            Delete
+          </Button>
+        </>
+      )}
     </Box>
   );
 };
