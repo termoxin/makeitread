@@ -23,19 +23,24 @@ const updateArticle = async (id: string, updates: Partial<CardProps>) => {
 export const setMarkAsRead = (id: string, marked: boolean) =>
   updateArticle(id, { marked });
 
-export const getArticle = async (slug: string | string[]) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API}/api/readlist/${slug}`
-  );
+export const getArticle = async (slug: string | string[], email = "") => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/api/readlist/${slug}/${email}`
+    );
 
-  const { data } = await response.json();
+    const { data } = await response.json();
 
-  return data;
+    return data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 };
 
-export const removeArticlFromList = async (slug: string) => {
+export const removeArticlFromList = async (slug: string, email: string) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API}/api/readlist/${slug}`,
+    `${process.env.NEXT_PUBLIC_API}/api/readlist/${slug}/${email}`,
     { method: "DELETE" }
   );
 
