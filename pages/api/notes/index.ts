@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 
 import { Note } from "src/db/schemas";
-import { protectRoute } from "src/helpers/server /protectRoute";
+import { protectRoute } from "src/helpers/server/protectRoute";
 
 const getHandler = protectRoute(async (req, res) =>
   res.send(await Note.find({ email: req.user.email }))
