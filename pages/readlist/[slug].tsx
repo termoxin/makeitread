@@ -2,11 +2,11 @@ import { GetServerSidePropsContext } from "next";
 import DefaultErrorPage from "next/error";
 import { FC, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { Box, Heading, Text, Link, jsx, Button, Message } from "theme-ui";
+import { Box, Heading, Text, Link, Button } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { CardProps } from "@components/card/Card";
-import { transform } from "src/helpers/transform";
+import { transform } from "src/helpers/client/transform";
 import {
   getArticle,
   removeArticlFromList,
@@ -15,6 +15,7 @@ import {
 import { getArticleNotes } from "src/api/note";
 import { Notes } from "@components/notes";
 import { PageProps } from "pages/_app";
+import { getSession } from "next-auth/client";
 
 export interface NoteProps {
   _id: string;
@@ -37,10 +38,10 @@ const Article: FC<ArticleProps> = ({
   error,
   marked,
   slug,
-  _id,
-  notes,
   email,
+  _id,
   session,
+  notes,
 }) => {
   const { push } = useRouter();
   const [isMarkedAsRead, setMarkedAsRead] = useState(marked);
@@ -60,8 +61,8 @@ const Article: FC<ArticleProps> = ({
       "Are you sure you want to delete the article?"
     );
 
-    if (shouldDelete) {
-      await removeArticlFromList(slug);
+    if (shouldDelete && session.user.email) {
+      await removeArticlFromList(slug, session.user.email);
       push("/readlist");
     }
   };
@@ -92,7 +93,7 @@ const Article: FC<ArticleProps> = ({
         </Link>
         <div>{ReactHtmlParser(text, { transform })}</div>
       </Box>
-      {session?.user.email === email && (
+      {session && email === session.user.email && (
         <>
           <Notes notes={notes} />
           <Button
@@ -112,11 +113,26 @@ const Article: FC<ArticleProps> = ({
 
 export const getServerSideProps = async ({
   params,
+  req,
 }: GetServerSidePropsContext<{ slug: string }>) => {
-  const article = await getArticle(params?.slug as string);
-  const notes = await getArticleNotes(article.original);
+  const session = await getSession({ req });
 
-  return { props: { ...article, notes } };
+  if (session?.user.email) {
+    const article = await getArticle(
+      params?.slug as string,
+      session?.user.email
+    );
+
+    const notes = await getArticleNotes(article?.original, session.user.email);
+
+    return { props: { ...article, notes } };
+  }
+
+  const article = await getArticle(params?.slug as string);
+
+  return {
+    props: { ...article, notes: [] },
+  };
 };
 
 export default Article;
