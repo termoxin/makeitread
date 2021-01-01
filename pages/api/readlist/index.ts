@@ -1,38 +1,16 @@
-import { getToken } from "next-auth/jwt";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 
 import { Article } from "src/db/schemas";
-import { getPageMetadata } from "src/helpers/cheerio";
+import { getPageMetadata } from "src/helpers/server/cheerio";
 import { initDb } from "src/db";
+import { protectRoute } from "src/helpers/server/protectRoute";
 
 initDb();
 
-interface DecryptedToken {
-  email: string;
-  picture: string;
-  iat: number;
-  exp: number;
-}
-
-const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const secret = process.env.SECRET;
-
-  if (secret) {
-    const token = (await getToken({
-      req,
-      secret,
-      encryption: true,
-    })) as DecryptedToken;
-
-    if (!token) {
-      res.status(401);
-      res.end();
-    }
-
-    return res.send(await Article.find({ email: token.email }));
-  }
-};
+const getHandler = protectRoute(async (req, res) =>
+  res.send(await Article.find({ email: req.user.email }))
+);
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { url, email } = req.body;
