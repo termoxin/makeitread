@@ -2,17 +2,18 @@ import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 
 import { Note } from "src/db/schemas";
+import { protectRoute } from "src/helpers/server /protectRoute";
 
-const getHandler = async (_req: NextApiRequest, res: NextApiResponse) => {
-  return res.send({ data: await Note.find({}) });
-};
+const getHandler = protectRoute(async (req, res) =>
+  res.send(await Note.find({ email: req.user.email }))
+);
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
-    body: { text, url },
+    body: { text, email, url },
   } = req;
 
-  const note = new Note({ text, url });
+  const note = new Note({ text, email, url });
 
   await note.save();
 
