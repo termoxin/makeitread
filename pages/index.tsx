@@ -3,13 +3,13 @@
 
 import Link from "next/link";
 import { Badge, Heading, jsx, Message } from "theme-ui";
+import { FC } from "react";
+import { useSession } from "next-auth/client";
+import { NextPageContext } from "next";
 
 import { CardProps } from "@components/card/Card";
 import { fetchReadList } from "src/api/readlist";
 import { PageProps } from "./_app";
-import { FC } from "react";
-import { useSession } from "next-auth/client";
-import { NextPageContext } from "next";
 
 interface HomeProps extends PageProps {
   list: CardProps[];
