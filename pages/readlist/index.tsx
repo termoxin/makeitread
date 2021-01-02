@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Box, Button, Grid, Heading, Spinner } from "theme-ui";
 
 import { Card, CardProps } from "@components/card/Card";
@@ -51,13 +51,18 @@ const List: FC<ListProps> = ({ list }) => {
 
   const createFilter = (name: string) => () => setFilter(name);
 
-  const filterList = ({ marked }: CardProps) => {
-    if (marked && filter === "read") return true;
-    if (!marked && filter === "unread") return true;
-    if (filter === "all") return true;
+  const filterList = (type: string) => ({ marked }: CardProps) => {
+    if (marked && type === "read") return true;
+    if (!marked && type === "unread") return true;
+    if (type === "all") return true;
 
     return false;
   };
+
+  const getListByState = useCallback(
+    (type: string) => currentList.filter(filterList(type)),
+    [currentList]
+  );
 
   return (
     <Box>
@@ -74,7 +79,7 @@ const List: FC<ListProps> = ({ list }) => {
                 onClick={createFilter(name)}
                 key={name}
               >
-                {text}
+                {text} ({getListByState(name).length})
               </Button>
             ))}
           </Box>
@@ -85,7 +90,7 @@ const List: FC<ListProps> = ({ list }) => {
             }}
           >
             <Grid columns={[1, 2, 3, 4]} gap={4} mt={20}>
-              {currentList.filter(filterList).map((item) => (
+              {getListByState(filter).map((item) => (
                 <Card {...item} key={item.slug} />
               ))}
             </Grid>
