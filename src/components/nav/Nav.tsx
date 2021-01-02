@@ -6,7 +6,7 @@ import { Box, Button, Image, Text } from "theme-ui";
 import logo from "./logo.svg";
 
 interface NavigationProps {
-  toggleTheme: () => {};
+  toggleTheme: () => void;
 }
 
 export const Navigation: FC<NavigationProps> = ({ toggleTheme }) => {
