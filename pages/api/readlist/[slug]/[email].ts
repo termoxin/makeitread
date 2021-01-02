@@ -10,9 +10,6 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     slug,
   }).where("email", email);
 
-  if (articleInMyReadlist) {
-  }
-
   if (!articleInMyReadlist) {
     const article = await Article.findOne({
       slug,
