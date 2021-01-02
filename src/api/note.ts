@@ -1,7 +1,10 @@
-export const getArticleNotes = async (url: string) => {
+export const getArticleNotes = async (url: string, email: string) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API}/api/notes/${encodeURIComponent(url)}`
+    `${process.env.NEXT_PUBLIC_API}/api/notes/${encodeURIComponent(
+      url
+    )}/${encodeURIComponent(email)}`
   );
+
   const { data } = await response.json();
 
   return data;

@@ -1,15 +1,12 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
-
 import { GetServerSidePropsContext } from "next";
 import DefaultErrorPage from "next/error";
 import { FC, useState } from "react";
 import ReactHtmlParser from "react-html-parser";
-import { Box, Heading, Text, Link, jsx, Button, Message } from "theme-ui";
+import { Box, Heading, Text, Link, Button } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { CardProps } from "@components/card/Card";
-import { transform } from "src/helpers/transform";
+import { transform } from "src/helpers/client/transform";
 import {
   getArticle,
   removeArticlFromList,
@@ -17,6 +14,8 @@ import {
 } from "src/api/article";
 import { getArticleNotes } from "src/api/note";
 import { Notes } from "@components/notes";
+import { PageProps } from "pages/_app";
+import { getSession } from "next-auth/client";
 
 export interface NoteProps {
   _id: string;
@@ -24,9 +23,10 @@ export interface NoteProps {
   url: string;
 }
 
-interface ArticleProps extends CardProps {
+interface ArticleProps extends CardProps, PageProps {
   error?: boolean;
   notes: NoteProps[];
+  email: string;
 }
 
 const Article: FC<ArticleProps> = ({
@@ -38,7 +38,9 @@ const Article: FC<ArticleProps> = ({
   error,
   marked,
   slug,
+  email,
   _id,
+  session,
   notes,
 }) => {
   const { push } = useRouter();
@@ -59,8 +61,8 @@ const Article: FC<ArticleProps> = ({
       "Are you sure you want to delete the article?"
     );
 
-    if (shouldDelete) {
-      await removeArticlFromList(slug);
+    if (shouldDelete && session.user.email) {
+      await removeArticlFromList(slug, session.user.email);
       push("/readlist");
     }
   };
@@ -91,27 +93,46 @@ const Article: FC<ArticleProps> = ({
         </Link>
         <div>{ReactHtmlParser(text, { transform })}</div>
       </Box>
-      <Notes notes={notes} />
-      <Button
-        onClick={toggleMarkAsRead}
-        variant={isMarkedAsRead ? "primary" : "secondary"}
-      >
-        {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
-      </Button>
-      <Button mt={10} onClick={deleteArticle}>
-        Delete
-      </Button>
+      {session && email === session.user.email && (
+        <>
+          <Notes notes={notes} />
+          <Button
+            onClick={toggleMarkAsRead}
+            variant={isMarkedAsRead ? "primary" : "secondary"}
+          >
+            {isMarkedAsRead ? "Mark as unread" : "Mark as read"}
+          </Button>
+          <Button mt={10} onClick={deleteArticle}>
+            Delete
+          </Button>
+        </>
+      )}
     </Box>
   );
 };
 
 export const getServerSideProps = async ({
   params,
+  req,
 }: GetServerSidePropsContext<{ slug: string }>) => {
-  const article = await getArticle(params?.slug as string);
-  const notes = await getArticleNotes(article.original);
+  const session = await getSession({ req });
 
-  return { props: { ...article, notes } };
+  if (session?.user.email) {
+    const article = await getArticle(
+      params?.slug as string,
+      session?.user.email
+    );
+
+    const notes = await getArticleNotes(article?.original, session.user.email);
+
+    return { props: { ...article, notes } };
+  }
+
+  const article = await getArticle(params?.slug as string);
+
+  return {
+    props: { ...article, notes: [] },
+  };
 };
 
 export default Article;

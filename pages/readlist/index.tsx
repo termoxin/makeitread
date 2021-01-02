@@ -1,12 +1,14 @@
-/** @jsxRuntime classic */
-/** @jsx jsx  */
-import { FC, useState } from "react";
-import { Box, Button, Grid, Heading, jsx } from "theme-ui";
+import { FC, useCallback, useEffect, useState } from "react";
+import { Box, Button, Grid, Heading, Spinner } from "theme-ui";
 
 import { Card, CardProps } from "@components/card/Card";
 import { fetchReadList } from "src/api/readlist";
+import { NextPageContext } from "next";
+import { PageProps } from "pages/_app";
+import { useSession } from "next-auth/client";
+import { useRouter } from "next/router";
 
-interface ListProps {
+interface ListProps extends PageProps {
   list: CardProps[];
 }
 
@@ -31,63 +33,78 @@ const buttons: Button[] = [
 ];
 
 const List: FC<ListProps> = ({ list }) => {
+  const [session, loading] = useSession();
+  const { push } = useRouter();
+
+  const [currentList, setList] = useState(list);
   const [filter, setFilter] = useState("all");
 
-  const getButtonVariant = (name: string) => {
-    if (name === filter) {
-      return "primary";
+  useEffect(() => {
+    if (!loading && !session) {
+      setList([]);
+      push("/");
     }
+  }, [session, loading]);
 
-    return "alternative";
-  };
+  const getButtonVariant = (name: string) =>
+    name === filter ? "primary" : "alternative";
 
-  const createFilter = (name: string) => () => {
-    setFilter(name);
-  };
+  const createFilter = (name: string) => () => setFilter(name);
 
-  const filterList = ({ marked }: CardProps) => {
-    if (marked && filter === "read") return true;
-    if (!marked && filter === "unread") return true;
-    if (filter === "all") return true;
+  const filterList = (type: string) => ({ marked }: CardProps) => {
+    if (marked && type === "read") return true;
+    if (!marked && type === "unread") return true;
+    if (type === "all") return true;
 
     return false;
   };
 
+  const getListByState = useCallback(
+    (type: string) => currentList.filter(filterList(type)),
+    [currentList]
+  );
+
   return (
     <Box>
-      <Heading mt={80} sx={{ variant: "styles.h1" }}>
-        My List
-      </Heading>
-      <Box mt={20} mb={20}>
-        {buttons.map(({ text, name }) => (
-          <Button
-            mr={10}
-            variant={getButtonVariant(name)}
-            onClick={createFilter(name)}
-            key={name}
+      {!loading && session ? (
+        <>
+          <Heading mt={80} sx={{ variant: "styles.h1" }}>
+            My List
+          </Heading>
+          <Box mt={20} mb={20}>
+            {buttons.map(({ text, name }) => (
+              <Button
+                mr={10}
+                variant={getButtonVariant(name)}
+                onClick={createFilter(name)}
+                key={name}
+              >
+                {text} ({getListByState(name).length})
+              </Button>
+            ))}
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
           >
-            {text}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Grid columns={[1, 2, 3, 4]} gap={4} mt={20}>
-          {list.filter(filterList).map((item) => (
-            <Card {...item} key={item.slug} />
-          ))}
-        </Grid>
-      </Box>
+            <Grid columns={[1, 2, 3, 4]} gap={4} mt={20}>
+              {getListByState(filter).map((item) => (
+                <Card {...item} key={item.slug} />
+              ))}
+            </Grid>
+          </Box>
+        </>
+      ) : (
+        <Spinner />
+      )}
     </Box>
   );
 };
 
-export const getServerSideProps = async () => {
-  const list = await fetchReadList();
+export const getServerSideProps = async (context: NextPageContext) => {
+  const list = await fetchReadList(context);
 
   return { props: { list } };
 };

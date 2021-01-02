@@ -1,6 +1,16 @@
-export const fetchReadList = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/readlist`);
-  const list = await response.json();
+import { axios } from "./axios";
+import { NextPageContext } from "next";
 
-  return list;
+export const fetchReadList = async (context: NextPageContext) => {
+  try {
+    const { data } = await axios({
+      method: "GET",
+      url: `/api/readlist`,
+      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
+    });
+
+    return data;
+  } catch (err) {
+    return [];
+  }
 };

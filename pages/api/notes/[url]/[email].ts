@@ -4,9 +4,9 @@ import nc from "next-connect";
 import { Note } from "src/db/schemas";
 
 const getHandler = async (
-  { query: { url } }: NextApiRequest,
+  { query: { url, email } }: NextApiRequest,
   res: NextApiResponse
-) => res.send({ data: await Note.find({ url }) });
+) => res.send({ data: await Note.find({ url, email }) });
 
 const handler = nc().get(getHandler);
 

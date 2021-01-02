@@ -12,8 +12,8 @@ interface NotesProps {
 }
 
 export const Notes: FC<NotesProps> = ({ notes }) => (
-  <Box>
-    <Heading mt={50}>Notes</Heading>
+  <Box mt={30}>
+    {!!notes.length && <Heading>Notes</Heading>}
     <ul sx={{ listStyle: "none", padding: 0 }}>
       {notes.map(({ text, _id }) => (
         <li key={_id}>
