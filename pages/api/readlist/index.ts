@@ -27,6 +27,10 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 const putHandler = async ({ body }: NextApiRequest, res: NextApiResponse) => {
   const { id, ...updates } = body;
 
+  if (updates.marked !== undefined) {
+    updates.markedAt = new Date();
+  }
+
   const article = await Article.findByIdAndUpdate(id, updates, {
     returnOriginal: false,
   });

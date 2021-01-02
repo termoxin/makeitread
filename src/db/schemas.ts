@@ -19,15 +19,19 @@ const articleSchema = new mongoose.Schema(
     source: String,
     marked: Boolean,
     email: String,
+    markedAt: Date,
   },
   { timestamps: true }
 );
 
-const noteSchema = new mongoose.Schema({
-  text: String,
-  url: String,
-  email: String,
-}, {timestamps: true});
+const noteSchema = new mongoose.Schema(
+  {
+    text: String,
+    url: String,
+    email: String,
+  },
+  { timestamps: true }
+);
 
 export const Article = initializeModel("Article", articleSchema);
 export const Note = initializeModel("Note", noteSchema);
