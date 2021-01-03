@@ -6,12 +6,12 @@ import { Badge, Box, Heading, jsx, Message } from "theme-ui";
 import { FC, useMemo } from "react";
 import { useSession } from "next-auth/client";
 import { NextPageContext } from "next";
+import { ResponsiveCalendar } from "@nivo/calendar";
 
 import { CardProps } from "@components/card/Card";
 import { fetchReadList } from "src/api/readlist";
 import { PageProps } from "./_app";
-import { CalendarHeatmap, ChartShallowDataShape } from "reaviz";
-import { getDayOfYear } from "src/helpers/client/date";
+import { getDayOfYear, getFormattedDate } from "src/helpers/client/date";
 
 interface ExpandedCard extends CardProps {
   createdAt: Date;
@@ -31,23 +31,20 @@ const Home: FC<HomeProps> = ({ list }) => {
         list
           .filter((article) => article.markedAt)
           .map((article) => new Date(article.markedAt))
-          .reduce(
-            (acc: Record<number, ChartShallowDataShape>, currentValue) => {
-              const date = new Date(currentValue);
-              const dayOfYear = getDayOfYear(date);
-              const day = acc[dayOfYear];
+          .reduce((acc: Record<number, any>, currentValue) => {
+            const date = new Date(currentValue);
+            const dayOfYear = getDayOfYear(date);
+            const day = acc[dayOfYear];
 
-              return {
-                ...acc,
-                [dayOfYear]: {
-                  ...day,
-                  key: day?.key ?? date,
-                  data: day?.data ? +day.data + 1 : 1,
-                },
-              };
-            },
-            {}
-          )
+            return {
+              ...acc,
+              [dayOfYear]: {
+                ...day,
+                day: !day?.day ? getFormattedDate(day?.day || date) : day.day,
+                value: day?.value ? +day.value + 1 : 1,
+              },
+            };
+          }, {})
       ),
     []
   );
@@ -66,16 +63,32 @@ const Home: FC<HomeProps> = ({ list }) => {
           Please, sing in to see your reading list
         </Message>
       )}
-      {!!heatmapData.length && (
-        <Box mt={20} ml={10}>
-          <CalendarHeatmap
-            sx={{ overflow: "visible" }}
-            data={heatmapData}
-            height={135}
-            width={805}
-          />
-        </Box>
-      )}
+      <Box mt={20} ml={10} sx={{ width: 700, height: 300 }}>
+        <ResponsiveCalendar
+          data={heatmapData}
+          from="2021-01-01"
+          to="2021-12-31"
+          emptyColor="#eeeeee"
+          colors={["#61cdbb", "#97e3d5", "#e8c1a0", "#f47560"]}
+          margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+          yearSpacing={40}
+          monthBorderColor="#ffffff"
+          dayBorderWidth={2}
+          dayBorderColor="#ffffff"
+          legends={[
+            {
+              anchor: "bottom-right",
+              direction: "row",
+              translateY: 36,
+              itemCount: 4,
+              itemWidth: 42,
+              itemHeight: 36,
+              itemsSpacing: 14,
+              itemDirection: "right-to-left",
+            },
+          ]}
+        />
+      </Box>
     </div>
   );
 };
