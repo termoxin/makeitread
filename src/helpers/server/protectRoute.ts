@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { User } from "next-auth";
 import { getSession } from "next-auth/client";
 
-interface ProtectedNextApiRequest extends NextApiRequest {
+export interface ProtectedNextApiRequest extends NextApiRequest {
   user: User;
 }
 
@@ -24,7 +24,7 @@ export const protectRoute = (handler: protectedHandler) => async (
     });
 
     if (!token) {
-      res.status(401);
+      res.status(403);
       return res.end();
     }
 

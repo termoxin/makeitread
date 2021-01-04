@@ -12,31 +12,35 @@ const getHandler = protectRoute(async (req, res) =>
   res.send(await Article.find({ email: req.user.email }))
 );
 
-const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { url, email } = req.body;
+const postHandler = protectRoute(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    const { url, email } = req.body;
 
-  const metaData = await getPageMetadata(url);
+    const metaData = await getPageMetadata(url);
 
-  const article = new Article({ ...metaData, email });
+    const article = new Article({ ...metaData, email });
 
-  await article.save();
+    await article.save();
 
-  return res.send(article);
-};
-
-const putHandler = async ({ body }: NextApiRequest, res: NextApiResponse) => {
-  const { id, ...updates } = body;
-
-  if (updates.marked !== undefined) {
-    updates.markedAt = new Date();
+    return res.send(article);
   }
+);
 
-  const article = await Article.findByIdAndUpdate(id, updates, {
-    returnOriginal: false,
-  });
+const putHandler = protectRoute(
+  async ({ body }: NextApiRequest, res: NextApiResponse) => {
+    const { id, ...updates } = body;
 
-  res.send(article);
-};
+    if (updates.marked !== undefined) {
+      updates.markedAt = new Date();
+    }
+
+    const article = await Article.findByIdAndUpdate(id, updates, {
+      returnOriginal: false,
+    });
+
+    res.send(article);
+  }
+);
 
 const handler = nc().get(getHandler).post(postHandler).put(putHandler);
 

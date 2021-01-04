@@ -1,11 +1,18 @@
-export const getArticleNotes = async (url: string, email: string) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API}/api/notes/${encodeURIComponent(
-      url
-    )}/${encodeURIComponent(email)}`
-  );
+import { IncomingMessage } from "http";
+import { axios } from "./axios";
 
-  const { data } = await response.json();
+export const getArticleNotes = async (
+  url: string,
+  email: string,
+  req?: IncomingMessage
+) => {
+  const {
+    data: { data },
+  } = await axios({
+    method: "GET",
+    url: `/api/notes/${encodeURIComponent(url)}/${encodeURIComponent(email)}`,
+    headers: req ? { cookie: req.headers.cookie } : undefined,
+  });
 
   return data;
 };

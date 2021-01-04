@@ -8,17 +8,19 @@ const getHandler = protectRoute(async (req, res) =>
   res.send(await Note.find({ email: req.user.email }))
 );
 
-const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const {
-    body: { text, email, url },
-  } = req;
+const postHandler = protectRoute(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    const {
+      body: { text, email, url },
+    } = req;
 
-  const note = new Note({ text, email, url });
+    const note = new Note({ text, email, url });
 
-  await note.save();
+    await note.save();
 
-  return res.send(note);
-};
+    return res.send(note);
+  }
+);
 
 const handler = nc().get(getHandler).post(postHandler);
 

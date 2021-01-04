@@ -120,10 +120,15 @@ export const getServerSideProps = async ({
   if (session?.user.email) {
     const article = await getArticle(
       params?.slug as string,
-      session?.user.email
+      session?.user.email,
+      req
     );
 
-    const notes = await getArticleNotes(article?.original, session.user.email);
+    const notes = await getArticleNotes(
+      article?.original,
+      session.user.email,
+      req
+    );
 
     return { props: { ...article, notes } };
   }
