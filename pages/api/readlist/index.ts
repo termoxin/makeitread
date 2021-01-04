@@ -34,7 +34,7 @@ const putHandler = protectRoute(
       if (updates.marked) {
         updates.markedAt = new Date();
       } else {
-        updates.markedAt = null;
+        updates.markedAt = undefined;
       }
     }
 
