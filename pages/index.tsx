@@ -6,14 +6,14 @@ import { Badge, Box, Heading, jsx, Message } from "theme-ui";
 import { FC, useMemo } from "react";
 import { useSession } from "next-auth/client";
 import { NextPageContext } from "next";
-import { CalendarDatum, ResponsiveCalendar } from "@nivo/calendar";
+import { ResponsiveCalendar } from "@nivo/calendar";
 
 import { CardProps } from "@components/card/Card";
 import { fetchReadList } from "src/api/readlist";
 import { PageProps } from "./_app";
-import { getDayOfYear, getFormattedDate } from "src/helpers/client/date";
+import { getHeatmapData } from "src/helpers/client/getHeatmapData";
 
-interface ExpandedCard extends CardProps {
+export interface ExpandedCard extends CardProps {
   createdAt: Date;
   updatedAt: Date;
   markedAt: Date;
@@ -25,29 +25,7 @@ interface HomeProps extends PageProps {
 const Home: FC<HomeProps> = ({ list }) => {
   const [session] = useSession();
 
-  const heatmapData = useMemo(
-    () =>
-      Object.values(
-        list
-          .filter((article) => article.markedAt)
-          .map((article) => new Date(article.markedAt))
-          .reduce((acc: Record<number, CalendarDatum>, currentValue) => {
-            const date = new Date(currentValue);
-            const dayOfYear = getDayOfYear(date);
-            const day = acc[dayOfYear];
-
-            return {
-              ...acc,
-              [dayOfYear]: {
-                ...day,
-                day: !day?.day ? getFormattedDate(date) : day.day,
-                value: day?.value ? +day.value + 1 : 1,
-              },
-            };
-          }, {})
-      ),
-    []
-  );
+  const heatmapData = useMemo(() => getHeatmapData(list), []);
 
   return (
     <div>
