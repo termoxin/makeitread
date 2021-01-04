@@ -31,7 +31,11 @@ const putHandler = protectRoute(
     const { id, ...updates } = body;
 
     if (updates.marked !== undefined) {
-      updates.markedAt = new Date();
+      if (updates.marked) {
+        updates.markedAt = new Date();
+      } else {
+        updates.markedAt = null;
+      }
     }
 
     const article = await Article.findByIdAndUpdate(id, updates, {
