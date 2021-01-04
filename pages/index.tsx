@@ -6,7 +6,7 @@ import { Badge, Box, Heading, jsx, Message } from "theme-ui";
 import { FC, useMemo } from "react";
 import { useSession } from "next-auth/client";
 import { NextPageContext } from "next";
-import { ResponsiveCalendar } from "@nivo/calendar";
+import { CalendarDatum, ResponsiveCalendar } from "@nivo/calendar";
 
 import { CardProps } from "@components/card/Card";
 import { fetchReadList } from "src/api/readlist";
@@ -31,7 +31,7 @@ const Home: FC<HomeProps> = ({ list }) => {
         list
           .filter((article) => article.markedAt)
           .map((article) => new Date(article.markedAt))
-          .reduce((acc: Record<number, any>, currentValue) => {
+          .reduce((acc: Record<number, CalendarDatum>, currentValue) => {
             const date = new Date(currentValue);
             const dayOfYear = getDayOfYear(date);
             const day = acc[dayOfYear];
@@ -40,7 +40,7 @@ const Home: FC<HomeProps> = ({ list }) => {
               ...acc,
               [dayOfYear]: {
                 ...day,
-                day: !day?.day ? getFormattedDate(day?.day || date) : day.day,
+                day: !day?.day ? getFormattedDate(date) : day.day,
                 value: day?.value ? +day.value + 1 : 1,
               },
             };
