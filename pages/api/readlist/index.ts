@@ -9,7 +9,7 @@ import { protectRoute } from "src/helpers/server/protectRoute";
 initDb();
 
 const getHandler = protectRoute(async (req, res) =>
-  res.send(await Article.find({ email: req.user.email }))
+  res.send(await Article.find({ email: req.user.email }).sort({ _id: -1 }))
 );
 
 const postHandler = protectRoute(
