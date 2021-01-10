@@ -1,11 +1,15 @@
-import Link from "next/link";
-import React, { FC } from "react";
+/** @jsxRuntime classic */
+/** @jsx jsx  */
+
+import { FC } from "react";
 import {
   AspectImage,
   Box,
   Card as CardContainer,
   Heading,
   Text,
+  jsx,
+  Link,
 } from "theme-ui";
 import imageNotFound from "./imageNotFound.png";
 
@@ -46,7 +50,15 @@ export const Card: FC<CardProps> = ({
     />
     <Box p={3}>
       <Box>
-        <Link href="/readlist/[id]" as={`/readlist/${slug}`}>
+        <Link
+          href={`/readlist/${slug}`}
+          target="_blank"
+          sx={{
+            variant: "styles.h4`",
+            color: "text",
+            textDecoration: "none",
+          }}
+        >
           <Heading
             sx={{ variant: "styles.h4", fontWeight: "body", cursor: "pointer" }}
           >
